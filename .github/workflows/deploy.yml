@@ -24,6 +24,9 @@ jobs:
           pip install frozen-flask
 
       - name: Build static site
+        env:
+          # 添加这个环境变量来设置基础URL
+          FLASK_BASE_URL: '/pet-memorials'
         run: |
           # 创建一个脚本来生成静态文件
           cat > freeze.py << 'EOF'
