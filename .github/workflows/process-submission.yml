@@ -1,0 +1,53 @@
+# .github/workflows/process-submission.yml
+name: Process Pet Memorial
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Validate Structure
+        run: |
+          # 校验目录命名规则
+          python scripts/validate_naming.py
+          
+          # 校验JSON Schema
+          npm install -g ajv-cli
+          ajv validate -s schemas/pet.schema.json -d "pets/*/*/meta.json"
+
+      - name: Check Images
+        uses: calibreapp/image-actions@main
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          compressOnly: true
+          jpegQuality: 80
+          pngQuality: 80
+
+  auto-merge:
+    needs: validation
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              event: 'APPROVE'
+            })
+
+      - name: Enable AutoMerge
+        uses: pascalgn/automerge-action@v0.15.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

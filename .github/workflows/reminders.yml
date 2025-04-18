@@ -1,0 +1,30 @@
+# .github/workflows/reminders.yml
+name: Memorial Reminders
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # 每天UTC时间8点运行
+
+jobs:
+  check-anniversaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 计算纪念日
+        run: |
+          python scripts/calculate_anniversaries.py > dates.txt
+
+      - name: 创建提醒Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const dates = fs.readFileSync('dates.txt', 'utf-8').split('\n');
+            dates.forEach(date => {
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `今日纪念：${date.petName}`,
+                body: `今天是${date.petName}的${date.type}纪念日 ❤️`
+              });
+            });

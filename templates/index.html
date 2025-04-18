@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 电子宠物墓园{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">欢迎来到电子宠物墓园</h1>
+                <p class="card-text">这是一个纪念我们心爱宠物的地方。在这里，我们可以永久保存和分享与宠物相处的美好回忆。</p>
+                <a href="https://github.com/your-username/pet-memorials" class="btn btn-primary">参与项目</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for pet in pets %}
+    <div class="col-md-4 mb-4">
+        <div class="card pet-card h-100">
+            {% if pet.photos %}
+            <img src="/static/pets/{{ pet.id }}/photos/{{ pet.photos[0] }}" class="card-img-top" alt="{{ pet.name }}">
+            {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ pet.name }}</h5>
+                <p class="card-text">
+                    <small class="text-muted">
+                        {{ pet.species }} · {{ pet.breed }}<br>
+                        {{ pet.birth_date }} - {{ pet.pass_date }}<br>
+                        享年 {{ pet.age }} 岁
+                    </small>
+                </p>
+                <p class="card-text">{{ pet.description }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="/pet/{{ pet.id }}" class="btn btn-outline-primary">查看详情</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

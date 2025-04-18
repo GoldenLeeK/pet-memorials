@@ -1,0 +1,11 @@
+{
+  "name": "示例宠物",
+  "owner": "示例主人",
+  "birth_date": "2020-01-01",
+  "pass_date": "2023-12-31",
+  "species": "狗",
+  "breed": "金毛寻回犬",
+  "description": "这是一只非常可爱的金毛寻回犬，喜欢玩耍和游泳。",
+  "photos": ["photo1.jpg", "photo2.jpg"],
+  "stories": ["story1.md"]
+} 
